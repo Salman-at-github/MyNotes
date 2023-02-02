@@ -1,0 +1,61 @@
+.hhome{
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+#noteicon{
+height: 3em;
+width: 3em;
+}
+i{
+  cursor: pointer;
+}
+#hlogin{
+  text-align: center;
+}
+.custom-nav{
+  background-color: aqua;
+  border: 1px solid rgb(165, 165, 245);
+  justify-content: left;
+  font-family: 'Yeon Sung';
+  height: 11vh;
+  width: 98.7vw;
+  padding: .3rem;
+}
+.custom-nav ul{
+  display: flex;
+}
+
+#logo {
+  display: flex;
+  color: black;
+  align-items: center;
+  font-size: 3vw;
+}
+#logo a{
+  text-decoration: none;
+  color: black;
+}
+div #logo img{
+  height: 6vh;
+  width: 3vw;
+}
+.custom-nav li{
+  list-style: none;
+  text-align: center;
+  color: rgb(7, 7, 7);
+  text-decoration: none;
+  margin: .8rem;
+  font-size: 1.5vw;
+}
+.paths{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.8rem;
+}
+.paths a{
+text-decoration: none;
+color: black;
+
+}
