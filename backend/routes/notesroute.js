@@ -1,4 +1,4 @@
-//API FOR THE SERVER
+//APIs FOR THE SERVER
 
 const express = require('express');
 const router = express.Router();
