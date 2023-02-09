@@ -1,3 +1,4 @@
+// THIS IS WHAT CONNECTS THE BACKENED API TO FRONT END, WE USE 'fetch api'
 import noteContext from "./noteContext";
 import { useState } from "react";
 
