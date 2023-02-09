@@ -1,3 +1,4 @@
+// THIS IS WHERE THE ENTIRE BACKEND IS INTEGRATED INTO A SINGLE SERVER APPLICATION
 const connectToMongo = require('./db');
 const cors = require('cors');
 
