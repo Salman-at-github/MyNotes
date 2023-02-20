@@ -8,7 +8,7 @@ const express = require('express');
 const app = express();
 const port = 5000;
 
-// TO USE req.body to send data body with req 
+// TO USE req.body json to send data body with req 
 app.use(cors());
 app.use(express.json());
 

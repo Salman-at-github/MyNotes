@@ -40,44 +40,48 @@ body('description', "Enter a valid name (min 3 chars)").isLength({ min: 2 })], a
 });
 
 // ROUTE3 Update a note using PUT api/notes/updatenote/:id. ("/:ID") means we are setting params to the link, this id will be fetched later. Login required
-router.put('/updatenote/:id', fetchUser,async (req, res) =>{
-    try{
-    const {title, description,tag} = req.body;
+router.put('/updatenote/:id', fetchUser, async (req, res) => {
+    try {
+        const { title, description, tag } = req.body;
 
-    // create an update note obj
-    const updatedNote = {};
-    if(title)(updatedNote.title=title);
-    if(description)(updatedNote.description=description);
-    if(tag)(updatedNote.tag=tag);
+        // create an update note obj
+        const updatedNote = {};
+        if (title) (updatedNote.title = title);
+        if (description) (updatedNote.description = description);
+        if (tag) (updatedNote.tag = tag);
 
-    // find the old note to be updated (/:id fetched here)
-    let oldNote = await Notes.findById(req.params.id);
-    if(!oldNote){
-        return res.status(404).send("Old not not found. Can't update")};
-    if(oldNote.user.toString() !== req.user.id){
-        return res.status(401).send("You can't update this note. You are not authorized")};
-    oldNote = await Notes.findByIdAndUpdate(req.params.id,  {$set: updatedNote}, {new:true}) ;
-    res.json(oldNote)
+        // find the old note to be updated (/:id fetched here)
+        let oldNote = await Notes.findById(req.params.id);
+        if (!oldNote) {
+            return res.status(404).send("Old not not found. Can't update")
+        };
+        if (oldNote.user.toString() !== req.user.id) {
+            return res.status(401).send("You can't update this note. You are not authorized")
+        };
+        oldNote = await Notes.findByIdAndUpdate(req.params.id, { $set: updatedNote }, { new: true });
+        res.json(oldNote)
     } catch (error) {
         console.error(error.message);
         res.status(400).send("Internal server error", error.message)
     };
-    })
+})
 
 // ROUTE4 Delete a note using Delete api/notes/deletenote/:id. ("/:id") means we are setting params to the link, this id will be fetched later. Login required
 
-router.delete('/deletenote/:id', fetchUser,async (req, res) =>{
-    try{
-    // find the old note to be deleted (/:id fetched here)
-    let oldNote = await Notes.findById(req.params.id);
-    if(!oldNote){
-        return res.status(404).send("Old not not found. Can't Delete")};
+router.delete('/deletenote/:id', fetchUser, async (req, res) => {
+    try {
+        // find the old note to be deleted (/:id fetched here)
+        let oldNote = await Notes.findById(req.params.id);
+        if (!oldNote) {
+            return res.status(404).send("Old not not found. Can't Delete")
+        };
 
         // check if user is the owner of the note or not and then delete
-    if(oldNote.user.toString() !== req.user.id){
-        return res.status(401).send("You can't delete this note. You are not authorized")};
-    oldNote = await Notes.findByIdAndDelete(req.params.id);
-    res.json({"Success":"Note deleted successfully"})
+        if (oldNote.user.toString() !== req.user.id) {
+            return res.status(401).send("You can't delete this note. You are not authorized")
+        };
+        oldNote = await Notes.findByIdAndDelete(req.params.id);
+        res.json({ "Success": "Note deleted successfully" })
     } catch (error) {
         console.error(error.message);
         res.status(400).send("Internal server error", error.message)
