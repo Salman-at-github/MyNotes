@@ -1,3 +1,5 @@
+//APIs FOR THE SERVER
+
 const express = require('express');
 const router = express.Router();
 const Notes = require('../models/Notes');

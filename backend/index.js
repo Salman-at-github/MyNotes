@@ -1,3 +1,4 @@
+// THIS IS WHERE THE ENTIRE BACKEND IS INTEGRATED INTO A SINGLE SERVER APPLICATION
 const connectToMongo = require('./db');
 const cors = require('cors');
 
@@ -12,7 +13,7 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-// AVAILABLE ROUTES
+// AVAILABLE ROUTES (APIs)
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/notes', require('./routes/notesroute'));
 app.get('/', (req, res) => {
