@@ -2,24 +2,23 @@
 
 const express = require('express');
 const router = express.Router();
-const Notes = require('../models/Notes');
+const Notesmodel = require('../models/Notes');
 const fetchUser = require('../../middleware/fetchUser');
 const { body, validationResult } = require('express-validator');
-
 
 // ROUTE1 Fetch all notes using get api/notes/fetchallnotes. Login required
 
 router.get('/fetchallnotes', fetchUser, async (req, res) => {
     try {
-        const notes = await Notes.find({ user: req.user.id });
-        res.json(notes)
+        const notes = await Notesmodel.find({ user: req.user.id });
+        res.status(200).json(notes)
     } catch (error) {
         console.error(error.message);
-        res.status(400).send("Json error encountered in fetching notes", error.message)
     }
-})
+});
 
-// ROUTE2 Add a new note using post api/notes/addnote. Login required
+// ROUTE2 Add a new note using post api/notes/addnote. Login required (so we use middleware to confirm token)
+//fetchUser condition should be met for the client to access this api, and that happens only if they have a valid auth token, which they can do only if they sign up.
 
 router.post('/addnote', fetchUser, [body('title', "Enter a title").isLength(),
 body('description', "Enter a valid name (min 3 chars)").isLength({ min: 2 })], async (req, res) => {
@@ -30,14 +29,13 @@ body('description', "Enter a valid name (min 3 chars)").isLength({ min: 2 })], a
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() })
         };
-        const newNote = new Notes({
-            title, description, tag, user: req.user.id
+        const newNote = new Notesmodel({
+            title, description, tag, user: req.user.id //this user is taken from fetchUser which took it from jwt of auth route
         });
         const savedNote = await newNote.save();
-        res.json(savedNote)
+        res.status(200).json(savedNote)
     } catch (error) {
         console.error(error.message);
-        res.status(400).send("Json error encountered in adding new notes", error.message)
     }
 });
 
@@ -53,18 +51,17 @@ router.put('/updatenote/:id', fetchUser, async (req, res) => {
         if (tag) (updatedNote.tag = tag);
 
         // find the old note to be updated (/:id fetched here)
-        let oldNote = await Notes.findById(req.params.id);
+        let oldNote = await Notesmodel.findById(req.params.id);
         if (!oldNote) {
             return res.status(404).send("Old not not found. Can't update")
         };
-        if (oldNote.user.toString() !== req.user.id) {
+        if (oldNote.user.toString() !== req.user.id) {//if notes's user's id != id in api/update
             return res.status(401).send("You can't update this note. You are not authorized")
         };
-        oldNote = await Notes.findByIdAndUpdate(req.params.id, { $set: updatedNote }, { new: true });
-        res.json(oldNote)
+        oldNote = await Notesmodel.findByIdAndUpdate(req.params.id, { $set: updatedNote }, { new: true }); //The $set operator is used to update the value of a field in a MongoDB document. It takes an object as its value, with each key-value pair representing a field and its new value.
+        res.status(200).json(oldNote)
     } catch (error) {
         console.error(error.message);
-        res.status(400).send("Internal server error", error.message)
     };
 })
 
@@ -73,7 +70,7 @@ router.put('/updatenote/:id', fetchUser, async (req, res) => {
 router.delete('/deletenote/:id', fetchUser, async (req, res) => {
     try {
         // find the old note to be deleted (/:id fetched here)
-        let oldNote = await Notes.findById(req.params.id);
+        let oldNote = await Notesmodel.findById(req.params.id);
         if (!oldNote) {
             return res.status(404).send("Old not not found. Can't Delete")
         };
@@ -82,11 +79,10 @@ router.delete('/deletenote/:id', fetchUser, async (req, res) => {
         if (oldNote.user.toString() !== req.user.id) {
             return res.status(401).send("You can't delete this note. You are not authorized")
         };
-        oldNote = await Notes.findByIdAndDelete(req.params.id);
-        res.json({ "Success": "Note deleted successfully" })
+        await Notesmodel.findByIdAndDelete(req.params.id);
+        res.status(200).json({ "Success": "Note deleted successfully" })
     } catch (error) {
         console.error(error.message);
-        res.status(400).send("Internal server error", error.message)
     };
 })
 module.exports = router;
